@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AssignmentOne.iml" filepath="$PROJECT_DIR$/.idea/modules/AssignmentOne.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/akka-http-quickstart-scala-with-slick-build.iml" filepath="$PROJECT_DIR$/.idea/modules/akka-http-quickstart-scala-with-slick-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Assignment-One.iml" filepath="$PROJECT_DIR$/.idea/modules/Assignment-One.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Assignment-One-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Assignment-One-build.iml" />
     </modules>
   </component>
 </project>
