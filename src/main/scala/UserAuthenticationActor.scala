@@ -64,14 +64,28 @@ object UserAuthenticationActor {
 
   private def receiveMessage(users: TableQuery[Users])(implicit ec: ExecutionContext): Behavior[Command] =
     Behaviors.receiveMessage {
-      case CreateUser(username, password, replyTo) =>
-        val uuid : String = UUID.randomUUID().toString()
-        replyTo ! Response(s"User $username created with user_uuid $uuid")
-        val action = users.insertOrUpdate(User(uuid, username, password)) //DBIOAction instance. Updates our users object representing out table
-        db.run(action) //We use run to actually update the database in the backend
-        receiveMessage(users) //updating state returns a Behaviour[Command]
 
-      case GetUser(user_uuid, replyTo: ActorRef[GetUserResponse]) =>
+      case CreateUser(username, password, replyTo) =>
+        val q2 = users.filter(_.username === username)
+        val action2 = q2.result
+        val result2: Future[Seq[(User)]] = db.run(action2)
+
+        result2 onComplete{
+          case Success(returnedUsers) =>
+            if (returnedUsers.length >= 1) {
+              replyTo ! Response(s"Username $username already exists")
+            }
+            else {
+              val uuid : String = UUID.randomUUID().toString()
+              replyTo ! Response(s"User $username created with user_uuid $uuid")
+              val action = users.insertOrUpdate(User(uuid, username, password))
+              db.run(action)
+            }
+          case Failure(exception) => replyTo ! Response(exception.getMessage)
+        }
+        Behaviors.same
+
+     case GetUser(user_uuid, replyTo: ActorRef[GetUserResponse]) =>
         val q = users.filter(_.user_uuid === user_uuid) //q is a query
         val action = q.result
         val result: Future[Seq[(User)]] = db.run(action)
